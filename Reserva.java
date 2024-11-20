@@ -11,6 +11,9 @@ class Reserva {
     private Assento assento;
 
     public Reserva(int idReserva, Date dataReserva, String statusReserva, Usuario usuario, Voo voo, Pagamento pagamento, Assento assento) {
+        if (usuario == null || voo == null || pagamento == null || assento == null) {
+            throw new IllegalArgumentException("Usuario, voo, pagamento e assento não podem ser nulos.");
+        }
         this.idReserva = idReserva;
         this.dataReserva = dataReserva;
         this.statusReserva = statusReserva;
@@ -21,18 +24,44 @@ class Reserva {
     }
 
     public void confirmarReserva() {
-        this.statusReserva = "Confirmada";
+        this.statusReserva = StatusReserva.CONFIRMADA;
     }
 
     public void cancelarReserva() {
-        this.statusReserva = "Cancelada";
+        this.statusReserva = StatusReserva.CANCELADA;
     }
 
-    public void atualizarStatus(String status) {
+    public void atualizarStatus(StatusReserva status) {
         this.statusReserva = status;
     }
 
-    public String getStatusReserva() {
+    public StatusReserva getStatusReserva() {
         return statusReserva;
     }
+
+    public LocalDateTime getDataReserva() {
+        return dataReserva;
+    }
+
+    public int getIdReserva() {
+        return idReserva;
+         }
+    } @Override
+public String toString() {
+    return "Reserva { " +
+            "idReserva=" + idReserva +
+            ", dataReserva=" + dataReserva +
+            ", statusReserva=" + statusReserva +
+            ", usuario=" + usuario +
+            ", voo=" + voo +
+            ", pagamento=" + pagamento +
+            ", assento=" + assento +
+            " }";
+}
+}
+
+enum StatusReserva {
+    CONFIRMADA,
+    CANCELADA,
+    PENDENTE;
 }
