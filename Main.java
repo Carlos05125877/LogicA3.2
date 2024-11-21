@@ -1,4 +1,3 @@
-
 import java.util.Date;
 import java.util.Scanner;
 import java.text.SimpleDateFormat;
@@ -10,11 +9,11 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         do {
-        System.out.println("Escolha uma opção:\n" +
-                "1. Cadastrar Usuario\n" +
-                "2. Realizar Login\n");
-        opcao = sc.nextInt();
-        sc.skip("[\r\n]");
+            System.out.println("Escolha uma opção:\n" +
+                    "1. Cadastrar Usuario\n" +
+                    "2. Realizar Login\n");
+            opcao = sc.nextInt();
+            sc.skip("[\r\n]");
 
             switch (opcao) {
                 case 1:
@@ -22,31 +21,25 @@ public class Main {
                     System.out.print("Digite o nome: ");
                     String nome = sc.nextLine();
 
-
                     System.out.print("Digite o email: ");
                     String email = sc.nextLine();
-
 
                     System.out.print("Digite a senha: ");
                     String senha = sc.nextLine();
 
-
                     System.out.print("Digite o CPF: ");
                     String cpf = sc.nextLine();
 
-
                     System.out.print("Digite o telefone: ");
                     String telefone = sc.nextLine();
-
 
                     System.out.print("Digite a data de nascimento (dd/MM/yyyy): ");
                     String dataNascimentoStr = sc.nextLine();
                     Date dataNascimento = dateFormat.parse(dataNascimentoStr);
 
-
-                    // Cadastro do usuário com os dados fornecidos
+                    // Cadastro do usuário
                     Usuario.cadastrarUsuario(nome, email, senha, cpf, telefone, dataNascimento);
-                    Usuario.listarUsuarios();
+                    Usuario.listarUsuarios(); // Exemplo de como listar usuários
 
                     opcao = 0;
                     break;
@@ -59,46 +52,69 @@ public class Main {
 
                     Usuario usuarioLogado = Usuario.realizarLogin(loginEmail, loginSenha);
 
-                    // Se o login foi bem-sucedido, executar uma nova função
+                    // Se o login foi bem-sucedido, mostrar opções para realizar reserva
                     if (usuarioLogado != null) {
-                        System.out.println("Escolha uma opção:\n" +
-                                            "1. Realizar uma reserva" +
-                                            "2. Visualizar histórico de reservas" +
-                                            "3. ");
+                        System.out.println("Login realizado com sucesso!");
+
+                        int escolha = 0;
+                        do {
+                            System.out.println("Escolha uma opção:\n" +
+                                    "1. Realizar uma reserva\n" +
+                                    "2. Visualizar histórico de reservas\n" +
+                                    "3. Sair");
+                            escolha = sc.nextInt();
+                            sc.skip("[\r\n]");
+
+                            switch (escolha) {
+                                case 1:
+                                    // Realizar a reserva
+                                    System.out.println("Escolha um voo disponível:");
+                                    System.out.println("1. Voo São Paulo - Rio de Janeiro");
+                                    int vooEscolhido = sc.nextInt();
+                                    if (vooEscolhido == 1) {
+                                        // Seleção de assento
+                                        System.out.println("Escolha um assento disponível:");
+                                        System.out.println("1. Assento 1A\n2. Assento 1B");
+                                        int assentoEscolhido = sc.nextInt();
+                                        Assento assentoSelecionado = (assentoEscolhido == 1) ? assento1 : assento2;
+
+                                        // Criar um pagamento e confirmar a reserva
+                                        Pagamento pagamento = new Pagamento(1, "Cartão de Crédito", new Date(), 500.00f, "Pendente");
+                                        Reserva reserva = new Reserva(new Date(), usuarioLogado, voo1, pagamento, assentoSelecionado);
+                                        reserva.confirmarReserva();
+                                        System.out.println("Reserva confirmada! Status da reserva: " + reserva.getStatusReserva());
+
+                                        // Processar pagamento
+                                        if (pagamento.processarPagamento()) {
+                                            System.out.println("Pagamento processado com sucesso.");
+                                        }
+
+                                        // Emitir o bilhete
+                                        Bilhete bilhete = new Bilhete(1, reserva);
+                                        bilhete.emitirBilhete();
+                                    }
+                                    break;
+                                case 2:
+                                    // Histórico de reservas
+                                    System.out.println("Histórico de reservas para o usuário: " + usuarioLogado);
+                                    // Reservas realizadas
+                                    break;
+                                case 3:
+                                    System.out.println("Saindo...");
+                                    break;
+                                default:
+                                    System.out.println("Opção inválida");
+                                    break;
+                            }
+                        } while (escolha != 3);
+                    } else {
+                        System.out.println("Login falhou, email ou senha incorretos.");
                     }
                     break;
                 default:
                     System.out.println("Opção inválida");
                     break;
             }
-        } while (opcao <= 2);
-
-
-        /*Voo voo = new Voo(1, new Date(), "São Paulo", "Rio de Janeiro",
-                "Companhia Aérea XYZ", "10:30");
-        Assento assento1 = new Assento(1, "1A", "Disponível",
-                "Econômica");
-        Assento assento2 = new Assento(2, "1B", "Disponível",
-                "Econômica");
-        voo.adicionarAssento(assento1);
-        voo.adicionarAssento(assento2);
-
-        if (voo.verificarDisponibilidade()) {
-            System.out.println("Assentos disponíveis no voo.");
-        }
-
-        assento1.reservarAssento();
-        Pagamento pagamento = new Pagamento(1, "Cartão de Crédito", new Date(), 500.00f, "Pendente");
-        Reserva reserva = new Reserva(1, new Date(), "Pendente", usuario, voo, pagamento, assento1);
-        reserva.confirmarReserva();
-        System.out.println("Reserva confirmada. Status da reserva: " + reserva.getStatusReserva());
-
-        if (pagamento.processarPagamento()) {
-            System.out.println("Pagamento processado. Status do pagamento: " + pagamento.verificarStatusPagamento());
-        }
-
-        Bilhete bilhete = new Bilhete(1, reserva);
-        bilhete.emitirBilhete();
-        System.out.println("Bilhete emitido: " + bilhete.consultarBilhete());*/
+        } while (opcao != 0);
     }
 }
